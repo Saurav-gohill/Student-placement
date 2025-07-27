@@ -35,39 +35,88 @@ print(f"🔗 Testing Backend API at: {API_BASE_URL}")
 print("=" * 60)
 
 def create_sample_pdf():
-    """Create a sample PDF resume for testing"""
+    """Create a sample PDF resume for testing using a simple binary approach"""
     temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.pdf')
     
-    # Create a simple PDF with resume content
-    c = canvas.Canvas(temp_file.name, pagesize=letter)
-    width, height = letter
+    # Create a minimal PDF structure (this is a very basic PDF)
+    pdf_content = b"""%PDF-1.4
+1 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+/Type /Pages
+/Kids [3 0 R]
+/Count 1
+>>
+endobj
+
+3 0 obj
+<<
+/Type /Page
+/Parent 2 0 R
+/MediaBox [0 0 612 792]
+/Contents 4 0 R
+/Resources <<
+/Font <<
+/F1 5 0 R
+>>
+>>
+>>
+endobj
+
+4 0 obj
+<<
+/Length 200
+>>
+stream
+BT
+/F1 12 Tf
+100 700 Td
+(John Smith - Software Engineer) Tj
+0 -20 Td
+(Email: john.smith@email.com) Tj
+0 -20 Td
+(Experience: Software Developer at Tech Corp) Tj
+0 -20 Td
+(Skills: Python, JavaScript, React, Django) Tj
+0 -20 Td
+(Education: BS Computer Science, GPA 3.8) Tj
+ET
+endstream
+endobj
+
+5 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica
+>>
+endobj
+
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000274 00000 n 
+0000000526 00000 n 
+trailer
+<<
+/Size 6
+/Root 1 0 R
+>>
+startxref
+623
+%%EOF"""
     
-    # Add resume content
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(100, height - 100, "John Smith")
-    
-    c.setFont("Helvetica", 12)
-    c.drawString(100, height - 130, "Software Engineer")
-    c.drawString(100, height - 150, "Email: john.smith@email.com")
-    c.drawString(100, height - 170, "Phone: (555) 123-4567")
-    
-    c.drawString(100, height - 210, "EXPERIENCE:")
-    c.drawString(120, height - 230, "• Software Developer at Tech Corp (2022-2024)")
-    c.drawString(120, height - 250, "• Developed web applications using React and Python")
-    c.drawString(120, height - 270, "• Improved system performance by 30%")
-    
-    c.drawString(100, height - 310, "EDUCATION:")
-    c.drawString(120, height - 330, "• Bachelor of Computer Science")
-    c.drawString(120, height - 350, "• University of Technology (2018-2022)")
-    c.drawString(120, height - 370, "• GPA: 3.8/4.0")
-    
-    c.drawString(100, height - 410, "SKILLS:")
-    c.drawString(120, height - 430, "• Programming: Python, JavaScript, Java")
-    c.drawString(120, height - 450, "• Frameworks: React, Django, Spring Boot")
-    c.drawString(120, height - 470, "• Databases: MySQL, MongoDB")
-    c.drawString(120, height - 490, "• Tools: Git, Docker, AWS")
-    
-    c.save()
+    temp_file.write(pdf_content)
+    temp_file.close()
     return temp_file.name
 
 def test_basic_connectivity():

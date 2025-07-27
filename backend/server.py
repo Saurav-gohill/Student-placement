@@ -66,6 +66,22 @@ class QuizAttempt(BaseModel):
     is_correct: bool
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
+class MockInterview(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    role: str
+    questions: List[str]
+    tips: List[str]
+    difficulty: str
+    duration: str
+
+class InterviewPractice(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    interview_id: str
+    user_responses: List[str]
+    feedback: str
+    score: int
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+
 class CareerRoadmap(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     role: str
@@ -74,6 +90,136 @@ class CareerRoadmap(BaseModel):
     skills: List[str]
     timeline: str
     difficulty: str
+
+# Sample mock interview data
+MOCK_INTERVIEWS = [
+    {
+        "role": "Software Engineer",
+        "questions": [
+            "Tell me about yourself and your technical background",
+            "What is your favorite programming language and why?",
+            "Explain the difference between a stack and a queue",
+            "How do you handle debugging in your code?",
+            "Describe a challenging project you've worked on",
+            "What are your career goals in software development?",
+            "How do you stay updated with new technologies?"
+        ],
+        "tips": [
+            "Practice explaining technical concepts in simple terms",
+            "Prepare specific examples from your projects",
+            "Show enthusiasm for learning new technologies",
+            "Ask clarifying questions when needed",
+            "Practice coding problems on a whiteboard"
+        ],
+        "difficulty": "Intermediate",
+        "duration": "45-60 minutes"
+    },
+    {
+        "role": "Frontend Developer",
+        "questions": [
+            "What's the difference between HTML, CSS, and JavaScript?",
+            "How do you optimize website performance?",
+            "Explain responsive design principles",
+            "What are React hooks and how do you use them?",
+            "How do you handle cross-browser compatibility?",
+            "What's your approach to debugging frontend issues?",
+            "How do you ensure accessibility in your applications?"
+        ],
+        "tips": [
+            "Demonstrate your portfolio and live projects",
+            "Show understanding of modern frontend frameworks",
+            "Practice live coding exercises",
+            "Explain your CSS methodology (BEM, SCSS, etc.)",
+            "Be ready to discuss UI/UX principles"
+        ],
+        "difficulty": "Beginner",
+        "duration": "30-45 minutes"
+    },
+    {
+        "role": "Backend Developer",
+        "questions": [
+            "Explain the difference between SQL and NoSQL databases",
+            "How do you design RESTful APIs?",
+            "What is database normalization?",
+            "How do you handle authentication and authorization?",
+            "Explain microservices architecture",
+            "How do you optimize database queries?",
+            "What are your strategies for handling high traffic?"
+        ],
+        "tips": [
+            "Know your database fundamentals well",
+            "Practice system design questions",
+            "Understand API design principles",
+            "Be familiar with cloud services",
+            "Show knowledge of security best practices"
+        ],
+        "difficulty": "Intermediate",
+        "duration": "45-60 minutes"
+    },
+    {
+        "role": "Data Scientist",
+        "questions": [
+            "What is the difference between supervised and unsupervised learning?",
+            "How do you handle missing data in datasets?",
+            "Explain the bias-variance tradeoff",
+            "How do you validate machine learning models?",
+            "What are your favorite Python libraries for data science?",
+            "How do you communicate technical results to non-technical stakeholders?",
+            "Describe your approach to feature engineering"
+        ],
+        "tips": [
+            "Practice explaining complex statistical concepts simply",
+            "Prepare examples of your data science projects",
+            "Know your statistics and probability fundamentals",
+            "Show proficiency in Python/R and SQL",
+            "Be ready to discuss real-world data challenges"
+        ],
+        "difficulty": "Advanced",
+        "duration": "60-75 minutes"
+    },
+    {
+        "role": "Product Manager",
+        "questions": [
+            "How do you prioritize features in a product roadmap?",
+            "Tell me about a time you had to make a difficult product decision",
+            "How do you gather and analyze user feedback?",
+            "What metrics do you use to measure product success?",
+            "How do you work with engineering teams?",
+            "How do you handle competing stakeholder requirements?",
+            "What's your approach to competitive analysis?"
+        ],
+        "tips": [
+            "Practice the STAR method for behavioral questions",
+            "Show data-driven decision making",
+            "Demonstrate understanding of user needs",
+            "Be ready to discuss product strategy",
+            "Show strong communication and leadership skills"
+        ],
+        "difficulty": "Advanced",
+        "duration": "45-60 minutes"
+    },
+    {
+        "role": "DevOps Engineer",
+        "questions": [
+            "What is CI/CD and why is it important?",
+            "How do you handle infrastructure as code?",
+            "Explain containerization and orchestration",
+            "How do you monitor system performance?",
+            "What's your approach to incident response?",
+            "How do you ensure system security?",
+            "Explain the difference between horizontal and vertical scaling"
+        ],
+        "tips": [
+            "Know your cloud platforms well (AWS, Azure, GCP)",
+            "Practice explaining complex infrastructure concepts",
+            "Show experience with automation tools",
+            "Be ready to discuss real incident scenarios",
+            "Demonstrate understanding of security best practices"
+        ],
+        "difficulty": "Advanced",
+        "duration": "45-60 minutes"
+    }
+]
 
 # Sample quiz data
 SAMPLE_QUIZZES = [

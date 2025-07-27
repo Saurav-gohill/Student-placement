@@ -402,6 +402,12 @@ async def init_db():
     if existing_roadmaps == 0:
         roadmap_objects = [CareerRoadmap(**roadmap) for roadmap in CAREER_ROADMAPS]
         await db.roadmaps.insert_many([roadmap.dict() for roadmap in roadmap_objects])
+    
+    # Check if mock interviews already exist
+    existing_interviews = await db.mock_interviews.count_documents({})
+    if existing_interviews == 0:
+        interview_objects = [MockInterview(**interview) for interview in MOCK_INTERVIEWS]
+        await db.mock_interviews.insert_many([interview.dict() for interview in interview_objects])
 
 # Routes
 @api_router.get("/")

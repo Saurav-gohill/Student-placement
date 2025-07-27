@@ -424,48 +424,249 @@ function App() {
     );
   };
 
-  const MockInterviews = () => (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-800 mb-2">🎭 Mock Interviews</h2>
-        <p className="text-gray-600">Practice with peers and improve your interview skills</p>
-      </div>
+  const MockInterviews = () => {
+    const [mockInterviews, setMockInterviews] = useState([]);
+    const [selectedInterview, setSelectedInterview] = useState(null);
+    const [currentQuestion, setCurrentQuestion] = useState(0);
+    const [responses, setResponses] = useState([]);
+    const [currentResponse, setCurrentResponse] = useState('');
+    const [practiceResult, setPracticeResult] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [mode, setMode] = useState('select'); // 'select', 'practice', 'result'
 
-      <div className="bg-white rounded-xl shadow-lg p-8 text-center">
-        <div className="text-6xl mb-6">🚧</div>
-        <h3 className="text-2xl font-bold text-gray-800 mb-4">Coming Soon!</h3>
-        <p className="text-gray-600 mb-6">
-          We're working on an exciting peer-to-peer mock interview feature where you can:
-        </p>
+    useEffect(() => {
+      fetchMockInterviews();
+    }, []);
+
+    const fetchMockInterviews = async () => {
+      try {
+        const response = await axios.get(`${API}/mock-interviews`);
+        setMockInterviews(response.data);
+      } catch (error) {
+        console.error('Error fetching mock interviews:', error);
+      }
+    };
+
+    const startInterview = (interview) => {
+      setSelectedInterview(interview);
+      setCurrentQuestion(0);
+      setResponses([]);
+      setCurrentResponse('');
+      setPracticeResult(null);
+      setMode('practice');
+    };
+
+    const saveResponse = () => {
+      if (currentResponse.trim()) {
+        const newResponses = [...responses, currentResponse];
+        setResponses(newResponses);
+        setCurrentResponse('');
         
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-blue-50 rounded-lg p-4">
-            <h4 className="font-bold text-blue-800 mb-2">🤝 Peer Matching</h4>
-            <p className="text-blue-700 text-sm">Get matched with fellow students for practice sessions</p>
+        if (currentQuestion < selectedInterview.questions.length - 1) {
+          setCurrentQuestion(currentQuestion + 1);
+        } else {
+          submitInterview(newResponses);
+        }
+      }
+    };
+
+    const submitInterview = async (finalResponses) => {
+      setLoading(true);
+      try {
+        const response = await axios.post(`${API}/mock-interview/practice`, null, {
+          params: {
+            interview_id: selectedInterview.id,
+            user_responses: finalResponses
+          }
+        });
+        setPracticeResult(response.data);
+        setMode('result');
+      } catch (error) {
+        console.error('Error submitting interview:', error);
+        alert('Error submitting interview. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const resetInterview = () => {
+      setMode('select');
+      setSelectedInterview(null);
+      setCurrentQuestion(0);
+      setResponses([]);
+      setCurrentResponse('');
+      setPracticeResult(null);
+    };
+
+    if (mode === 'select') {
+      return (
+        <div className="max-w-6xl mx-auto p-6">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-800 mb-2">🎭 Mock Interviews</h2>
+            <p className="text-gray-600">Practice with role-specific interview questions</p>
           </div>
-          <div className="bg-green-50 rounded-lg p-4">
-            <h4 className="font-bold text-green-800 mb-2">📹 Video Interviews</h4>
-            <p className="text-green-700 text-sm">Practice with real-time video calls and feedback</p>
-          </div>
-          <div className="bg-purple-50 rounded-lg p-4">
-            <h4 className="font-bold text-purple-800 mb-2">🎯 Role-Specific</h4>
-            <p className="text-purple-700 text-sm">Practice for specific roles and companies</p>
-          </div>
-          <div className="bg-orange-50 rounded-lg p-4">
-            <h4 className="font-bold text-orange-800 mb-2">📊 Performance Analytics</h4>
-            <p className="text-orange-700 text-sm">Track your progress and improvement areas</p>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {mockInterviews.map((interview) => (
+              <div
+                key={interview.id}
+                className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300"
+              >
+                <h3 className="text-xl font-bold text-gray-800 mb-3">{interview.role}</h3>
+                <p className="text-gray-600 mb-4">{interview.questions.length} practice questions</p>
+                
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-sm text-gray-500">⏱️ {interview.duration}</span>
+                  <span className={`px-2 py-1 rounded text-sm ${
+                    interview.difficulty === 'Beginner' ? 'bg-green-100 text-green-800' :
+                    interview.difficulty === 'Intermediate' ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-red-100 text-red-800'
+                  }`}>
+                    {interview.difficulty}
+                  </span>
+                </div>
+
+                <div className="mb-4">
+                  <h4 className="font-semibold text-gray-700 mb-2">💡 Interview Tips:</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    {interview.tips.slice(0, 2).map((tip, index) => (
+                      <li key={index}>• {tip}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <button
+                  onClick={() => startInterview(interview)}
+                  className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                >
+                  Start Practice →
+                </button>
+              </div>
+            ))}
           </div>
         </div>
+      );
+    }
 
-        <button
-          disabled
-          className="bg-gray-300 text-gray-500 px-6 py-3 rounded-lg cursor-not-allowed"
-        >
-          Notify Me When Available
-        </button>
-      </div>
-    </div>
-  );
+    if (mode === 'practice') {
+      return (
+        <div className="max-w-4xl mx-auto p-6">
+          <div className="bg-white rounded-xl shadow-lg p-8">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">{selectedInterview.role} Interview</h2>
+              <button
+                onClick={resetInterview}
+                className="text-gray-500 hover:text-gray-700 font-medium"
+              >
+                ← Back to Selection
+              </button>
+            </div>
+
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm text-gray-500">
+                  Question {currentQuestion + 1} of {selectedInterview.questions.length}
+                </span>
+                <span className="text-sm text-gray-500">
+                  {Math.round(((currentQuestion + 1) / selectedInterview.questions.length) * 100)}% Complete
+                </span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${((currentQuestion + 1) / selectedInterview.questions.length) * 100}%` }}
+                ></div>
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                {selectedInterview.questions[currentQuestion]}
+              </h3>
+              
+              <textarea
+                value={currentResponse}
+                onChange={(e) => setCurrentResponse(e.target.value)}
+                placeholder="Type your response here..."
+                className="w-full h-32 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            <div className="flex justify-between">
+              <button
+                onClick={resetInterview}
+                className="px-6 py-2 text-gray-600 hover:text-gray-800 font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveResponse}
+                disabled={!currentResponse.trim()}
+                className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+                  currentResponse.trim()
+                    ? 'bg-blue-600 text-white hover:bg-blue-700'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                {currentQuestion < selectedInterview.questions.length - 1 ? 'Next Question' : 'Submit Interview'}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (mode === 'result') {
+      return (
+        <div className="max-w-4xl mx-auto p-6">
+          <div className="bg-white rounded-xl shadow-lg p-8">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-800 mb-2">Interview Complete!</h2>
+              <p className="text-gray-600">Here's your performance summary</p>
+            </div>
+
+            <div className="text-center mb-8">
+              <div className="inline-block bg-blue-100 rounded-full p-6 mb-4">
+                <span className="text-4xl font-bold text-blue-600">{practiceResult.score}/100</span>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800">Interview Score</h3>
+            </div>
+
+            <div className="bg-gray-50 rounded-lg p-6 mb-6">
+              <h4 className="font-bold text-gray-800 mb-3">📝 Feedback</h4>
+              <p className="text-gray-700">{practiceResult.feedback}</p>
+            </div>
+
+            <div className="bg-blue-50 rounded-lg p-6 mb-6">
+              <h4 className="font-bold text-blue-800 mb-3">💡 Interview Tips for {selectedInterview.role}</h4>
+              <ul className="space-y-2">
+                {selectedInterview.tips.map((tip, index) => (
+                  <li key={index} className="text-blue-700 text-sm">• {tip}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="flex justify-center space-x-4">
+              <button
+                onClick={() => startInterview(selectedInterview)}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              >
+                Practice Again
+              </button>
+              <button
+                onClick={resetInterview}
+                className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium"
+              >
+                Try Different Role
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return null;
+  };
 
   const renderContent = () => {
     switch (activeTab) {

@@ -168,6 +168,78 @@ CAREER_ROADMAPS = [
         "skills": ["React Native", "Flutter", "Swift", "Kotlin", "Mobile UX"],
         "timeline": "8-14 months",
         "difficulty": "Intermediate"
+    },
+    {
+        "role": "Cybersecurity Engineer",
+        "description": "Protect systems and networks from security threats",
+        "roadmap_url": "https://roadmap.sh/cyber-security",
+        "skills": ["Network Security", "Penetration Testing", "Encryption", "Firewalls", "Security Auditing"],
+        "timeline": "10-18 months",
+        "difficulty": "Advanced"
+    },
+    {
+        "role": "QA Engineer",
+        "description": "Ensure software quality through testing and automation",
+        "roadmap_url": "https://roadmap.sh/qa",
+        "skills": ["Test Automation", "Selenium", "API Testing", "Performance Testing", "Bug Tracking"],
+        "timeline": "6-12 months",
+        "difficulty": "Intermediate"
+    },
+    {
+        "role": "UI/UX Designer",
+        "description": "Design user experiences and interfaces for digital products",
+        "roadmap_url": "https://roadmap.sh/ux-design",
+        "skills": ["Figma", "Sketch", "User Research", "Prototyping", "Design Systems"],
+        "timeline": "8-14 months",
+        "difficulty": "Intermediate"
+    },
+    {
+        "role": "Product Manager",
+        "description": "Drive product strategy and coordinate development teams",
+        "roadmap_url": "https://roadmap.sh/product-manager",
+        "skills": ["Product Strategy", "Market Research", "Agile", "Analytics", "User Stories"],
+        "timeline": "12-18 months",
+        "difficulty": "Advanced"
+    },
+    {
+        "role": "Machine Learning Engineer",
+        "description": "Build and deploy machine learning models and systems",
+        "roadmap_url": "https://roadmap.sh/mlops",
+        "skills": ["TensorFlow", "PyTorch", "MLOps", "Model Deployment", "Data Pipelines"],
+        "timeline": "12-20 months",
+        "difficulty": "Advanced"
+    },
+    {
+        "role": "Cloud Engineer",
+        "description": "Design and manage cloud infrastructure and services",
+        "roadmap_url": "https://roadmap.sh/aws",
+        "skills": ["AWS", "Azure", "Google Cloud", "Infrastructure as Code", "Serverless"],
+        "timeline": "10-16 months",
+        "difficulty": "Advanced"
+    },
+    {
+        "role": "Blockchain Developer",
+        "description": "Develop decentralized applications and smart contracts",
+        "roadmap_url": "https://roadmap.sh/blockchain",
+        "skills": ["Solidity", "Ethereum", "Smart Contracts", "DeFi", "Web3"],
+        "timeline": "12-18 months",
+        "difficulty": "Advanced"
+    },
+    {
+        "role": "Game Developer",
+        "description": "Create interactive games and gaming experiences",
+        "roadmap_url": "https://roadmap.sh/game-developer",
+        "skills": ["Unity", "Unreal Engine", "C#", "3D Modeling", "Game Design"],
+        "timeline": "10-16 months",
+        "difficulty": "Intermediate"
+    },
+    {
+        "role": "Database Administrator",
+        "description": "Manage and optimize database systems and performance",
+        "roadmap_url": "https://roadmap.sh/postgresql-dba",
+        "skills": ["SQL", "PostgreSQL", "MySQL", "Performance Tuning", "Backup & Recovery"],
+        "timeline": "8-14 months",
+        "difficulty": "Intermediate"
     }
 ]
 

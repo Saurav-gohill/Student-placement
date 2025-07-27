@@ -10,8 +10,6 @@ import os
 import sys
 from pathlib import Path
 import tempfile
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
 import time
 
 # Load backend URL from frontend .env

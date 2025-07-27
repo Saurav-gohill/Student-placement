@@ -711,9 +711,9 @@ function App() {
               <p className="text-sm text-gray-300">Skill Development</p>
             </div>
             <div>
-              <h4 className="font-bold mb-2">🚀 Powered by</h4>
-              <p className="text-sm text-gray-300">Google Gemini AI</p>
-              <p className="text-sm text-gray-300">Roadmap.sh</p>
+              <h4 className="font-bold mb-2">🎭 Mock Interviews</h4>
+              <p className="text-sm text-gray-300">Interview Practices: {stats.total_interview_practices || 0}</p>
+              <p className="text-sm text-gray-300">Available Roles: {stats.total_mock_interviews || 0}</p>
             </div>
           </div>
           <p className="text-gray-400">© 2025 AI-Powered Student Placement Prep Platform</p>

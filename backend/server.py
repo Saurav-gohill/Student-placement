@@ -574,18 +574,78 @@ async def get_roadmap_details(roadmap_id: str):
     
     return CareerRoadmap(**roadmap_data)
 
+@api_router.get("/mock-interviews", response_model=List[MockInterview])
+async def get_mock_interviews():
+    interviews = await db.mock_interviews.find().to_list(1000)
+    return [MockInterview(**interview) for interview in interviews]
+
+@api_router.get("/mock-interview/{role}", response_model=MockInterview)
+async def get_mock_interview_by_role(role: str):
+    interview_data = await db.mock_interviews.find_one({"role": role})
+    if not interview_data:
+        raise HTTPException(status_code=404, detail="Mock interview not found for this role")
+    
+    return MockInterview(**interview_data)
+
+@api_router.post("/mock-interview/practice", response_model=InterviewPractice)
+async def submit_interview_practice(interview_id: str, user_responses: List[str]):
+    # Get interview data
+    interview_data = await db.mock_interviews.find_one({"id": interview_id})
+    if not interview_data:
+        raise HTTPException(status_code=404, detail="Interview not found")
+    
+    # Simple scoring based on response length and completeness
+    total_score = 0
+    for response in user_responses:
+        if len(response.strip()) > 50:  # Decent length response
+            total_score += 15
+        elif len(response.strip()) > 20:  # Short but adequate
+            total_score += 10
+        else:  # Very short response
+            total_score += 5
+    
+    # Cap the score at 100
+    final_score = min(total_score, 100)
+    
+    # Generate feedback based on score
+    if final_score >= 90:
+        feedback = "Excellent responses! You demonstrated strong knowledge and communication skills. Keep up the great work!"
+    elif final_score >= 70:
+        feedback = "Good responses overall. Consider providing more specific examples and details to strengthen your answers."
+    elif final_score >= 50:
+        feedback = "Decent effort. Focus on expanding your answers with more concrete examples and technical details."
+    else:
+        feedback = "Your responses need more depth. Practice explaining concepts clearly and provide specific examples from your experience."
+    
+    # Create practice record
+    practice = InterviewPractice(
+        interview_id=interview_id,
+        user_responses=user_responses,
+        feedback=feedback,
+        score=final_score
+    )
+    
+    # Save to database
+    await db.interview_practices.insert_one(practice.dict())
+    
+    return practice
+
 @api_router.get("/stats")
 async def get_platform_stats():
     total_analyses = await db.resume_analyses.count_documents({})
     total_attempts = await db.quiz_attempts.count_documents({})
     total_quizzes = await db.quizzes.count_documents({})
     total_roadmaps = await db.roadmaps.count_documents({})
+    total_interviews = await db.mock_interviews.count_documents({})
+    total_practices = await db.interview_practices.count_documents({})
     
     return {
         "total_resume_analyses": total_analyses,
         "total_quiz_attempts": total_attempts,
         "total_quizzes": total_quizzes,
-        "total_roadmaps": total_roadmaps
+        "total_roadmaps": total_roadmaps,
+        "total_mock_interviews": total_interviews,
+        "total_interview_practices": total_practices
     }
 
 # Include the router in the main app
